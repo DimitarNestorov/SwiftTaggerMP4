@@ -121,7 +121,7 @@ public class Atom: CustomStringConvertible {
     }
     
     /// The atom's subatoms or properties as data
-    var contentData: Data {
+    public var contentData: Data {
         fatalError("Override contentData in subclass: \(type(of: self)).")
     }
     
