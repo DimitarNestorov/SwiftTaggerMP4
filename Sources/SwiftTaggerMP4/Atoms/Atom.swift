@@ -43,7 +43,7 @@ public class Atom: CustomStringConvertible {
     }
 
     /// The atoms sub-atom content
-    var children: [Atom] {
+    public var children: [Atom] {
         get {
             return _children
         }
