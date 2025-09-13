@@ -8,7 +8,7 @@
 import Foundation
 
 /// A class representing atoms that are untouched in chaptering or metadata manipulation
-class PassThrough: Atom {
+public class PassThrough: Atom {
     
     private var payload: Data
     /// Initialize an atom for parsing from the root structure
