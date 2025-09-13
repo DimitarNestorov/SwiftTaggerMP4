@@ -85,7 +85,20 @@ public class Meta: Atom {
         }
     }
     
-    var ilst: Ilst {
+    public var keys: PassThrough {
+        get {
+            if let atom = self[.keys] as? PassThrough {
+                return atom
+            } else {
+                fatalError("Required child 'keys' is missing from atom 'meta'")
+            }
+        }
+        set {
+            self[.keys] = newValue
+        }
+    }
+ 
+    public var ilst: Ilst {
         get {
             if let atom = self[.ilst] as? Ilst {
                 return atom
