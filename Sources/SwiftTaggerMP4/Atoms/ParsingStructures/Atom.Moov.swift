@@ -197,7 +197,7 @@ extension Moov {
         }
     }
     
-    var udta: Udta? {
+    public var udta: Udta? {
         get {
             if let atom = self[.udta] as? Udta {
                 return atom
