@@ -28,7 +28,7 @@ public class Ilst: Atom {
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.
-    override var contentData: Data {
+    public override var contentData: Data {
         let reserve = children.map({$0.size}).sum()
         var data = Data()
         data.reserveCapacity(reserve)
