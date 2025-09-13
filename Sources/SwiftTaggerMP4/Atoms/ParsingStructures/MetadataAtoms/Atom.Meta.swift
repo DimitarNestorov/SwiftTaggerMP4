@@ -8,7 +8,7 @@
 import Foundation
 
 /// A class representing a `meta` atom in an `Mp4File`'s atom structure
-class Meta: Atom {
+public class Meta: Atom {
     
     private var version: Data
     private var flags: Data
