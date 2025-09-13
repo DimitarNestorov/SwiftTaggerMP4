@@ -8,7 +8,7 @@
 import Foundation
 
 /// A class representing a `udta` atom in an `Mp4File`'s atom structure
-class Udta: Atom {
+public class Udta: Atom {
     
     /// Initialize a `udta` atom upon parsing the `root` atom structure
     override init(identifier: String, size: Int, payload: Data) throws {
