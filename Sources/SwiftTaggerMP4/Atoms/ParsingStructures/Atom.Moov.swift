@@ -7,7 +7,7 @@
 
 import Foundation
 /// Initialize an `moov` atom for parsing from the root structure
-class Moov: Atom {
+public class Moov: Atom {
     /// Initialize an `mdat` atom for parsing from the root structure
     override init(identifier: String,
                   size: Int,
