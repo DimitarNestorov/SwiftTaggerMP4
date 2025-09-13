@@ -43,7 +43,7 @@ public class Udta: Atom {
     }
     
     /// Gets and sets the `meta` atom in `udta`
-    var meta: Meta? {
+    public var meta: Meta? {
         get {
             self[.meta] as? Meta
         }
