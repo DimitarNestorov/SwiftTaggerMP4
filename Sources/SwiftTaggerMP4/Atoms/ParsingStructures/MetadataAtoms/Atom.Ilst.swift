@@ -10,7 +10,7 @@ import Foundation
 /// A class representing a `ilst` atom in an `Mp4File`'s atom structure
 ///
 /// The `ilst` atom is a sub-atom of `moov.udta.meta`
-class Ilst: Atom {
+public class Ilst: Atom {
     
     /// Initialize a `ilst` atom for parsing from the root structure
     override init(identifier: String, size: Int, payload: Data) throws {
