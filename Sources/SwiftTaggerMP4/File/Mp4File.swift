@@ -145,7 +145,7 @@ public class Mp4File {
     }
     
     // MARK: Internal properties
-    var moov: Moov {
+    public var moov: Moov {
         get {
             if let moov = rootAtoms.first(where: {$0.identifier == "moov"}) as? Moov {
                 return moov
