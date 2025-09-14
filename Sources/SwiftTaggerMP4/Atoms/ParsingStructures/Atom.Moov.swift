@@ -116,13 +116,13 @@ extension Moov {
         }
     }
     
-    var soundTrack: Trak {
+    var soundTrack: Trak? {
         get {
             if let atom = self[.trak] as? Trak,
                 atom.mdia.hdlr.handlerSubtype == .soun {
                 return atom
             } else {
-                fatalError("Required child 'trak' is missing from string metadata atom with identifier '\(self.identifier)'")
+                return nil
             }
         }
         set {
@@ -145,7 +145,7 @@ extension Moov {
     
     var chapterTrackID: Int? {
         get {
-            if let trackID = soundTrack.tref?.chap?.trackIDs.first {
+            if let trackID = soundTrack?.tref?.chap?.trackIDs.first {
                 return trackID
             } else {
                 return nil
@@ -153,25 +153,25 @@ extension Moov {
         }
         set {
             if let new = newValue {
-                if soundTrack.tref != nil {
+                if soundTrack?.tref != nil {
                     do {
-                        soundTrack.tref?.chap = try TrefSubatom(chapterTrackID: new)
+                        soundTrack?.tref?.chap = try TrefSubatom(chapterTrackID: new)
                     } catch {
                         fatalError("WARNING: Unable to initialize soundtrack.tref.chap atom with new chapter trackID")
                     }
                 } else {
                     do {
-                        soundTrack.tref = try Tref(chapterTrackID: new)
+                        soundTrack?.tref = try Tref(chapterTrackID: new)
                     } catch {
                         fatalError("WARNING: Unable to initialize soundtrack.tref atom with new chapter track ID")
                     }
                 }
             } else {
                 self.chapterTrack = nil
-                if let tref = soundTrack.tref, tref.children.count > 1 {
+                if let tref = soundTrack?.tref, tref.children.count > 1 {
                     tref.chap = nil
                 } else {
-                    soundTrack.tref = nil
+                    soundTrack?.tref = nil
                 }
             }
         }
