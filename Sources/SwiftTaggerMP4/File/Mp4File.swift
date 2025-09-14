@@ -102,7 +102,7 @@ public class Mp4File {
     
     var languages: [Language]? {
         get {
-            if let elng = moov.soundTrack.mdia.elng {
+            if let elng = moov.soundTrack?.mdia.elng {
                 return elng.languages
             } else {
                 return nil
