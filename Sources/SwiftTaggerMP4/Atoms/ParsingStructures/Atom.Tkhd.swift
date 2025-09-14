@@ -72,8 +72,8 @@ class Tkhd: Atom {
             return edts.elst.duration
         } else if let mvhd = self.parent?.siblings?.first(where: {$0.identifier == "mvhd"}) as? Mvhd {
             return mvhd.duration
-        } else if let moov = self.parent?.parent as? Moov {
-            return Double(moov.soundTrack.mdia.minf.stbl.stts.mediaDuration)
+        } else if let moov = self.parent?.parent as? Moov, let soundTrack = moov.soundTrack {
+            return Double(soundTrack.mdia.minf.stbl.stts.mediaDuration)
         } else {
             if self.version.uInt8BE == 0x01 {
                 return self.durationRaw.uInt64BE.double
