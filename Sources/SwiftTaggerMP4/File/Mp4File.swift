@@ -41,12 +41,14 @@ public class Mp4File {
             }
         }
         self.rootAtoms = atoms
-        
-        if self.moov.soundTrack.mdia.minf.stbl.chunkOffsetAtom.identifier == "co64" {
-            Mp4File.use64BitOffset = true
+
+        if let soundTrack = self.moov.soundTrack {
+            if soundTrack.mdia.minf.stbl.chunkOffsetAtom.identifier == "co64" {
+                Mp4File.use64BitOffset = true
+            }
+            
+            self.chunkSizes = try self.chunkSizes(stbl: soundTrack.mdia.minf.stbl)
         }
-        
-        self.chunkSizes = try self.chunkSizes(stbl: self.moov.soundTrack.mdia.minf.stbl)
     }
     
     public func tag() throws -> Tag {
@@ -129,8 +131,10 @@ public class Mp4File {
                 }
                 self.moov.tracks = newTracks
             } else {
-                self.moov.soundTrack.mdia.elng = nil
-                self.moov.soundTrack.mdia.mdhd.language = .unspecified
+                if let soundTrack = self.moov.soundTrack {
+                    soundTrack.mdia.elng = nil
+                    soundTrack.mdia.mdhd.language = .unspecified
+                }
                 if self.moov.chapterTrack != nil {
                     self.moov.chapterTrack?.mdia.elng = nil
                     self.moov.chapterTrack?.mdia.mdhd.language = .unspecified
