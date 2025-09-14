@@ -66,7 +66,10 @@ extension Mp4File {
     }
 
     func getMediaData() throws -> Data {
-        let chunkOffsets = self.moov.soundTrack.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable
+        guard let soundTrack = self.moov.soundTrack else {
+            throw Mp4FileError.ChunkSizeToChunkOffsetCountMismatch
+        }
+        let chunkOffsets = soundTrack.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable
         guard self.chunkSizes.count == chunkOffsets.count else {
             throw Mp4FileError.ChunkSizeToChunkOffsetCountMismatch
         }
@@ -109,7 +112,7 @@ extension Mp4File {
             offsets.append(offset)
         }
         
-        guard offsets.count == self.moov.soundTrack.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable.count else {
+        guard let soundTrack = self.moov.soundTrack, offsets.count == soundTrack.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable.count else {
             throw Mp4FileError.NewChunkOffsetArrayCountMismatch
         }
         return offsets
@@ -146,7 +149,7 @@ extension Mp4File {
                             titleArray: titles)
         self.mdats = [mdat]
         
-        self.moov.soundTrack.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable = try calculateNewMediaOffsets()
+        self.moov.soundTrack?.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable = try calculateNewMediaOffsets()
     }
     
     func setChapterTrack(tag: Tag) throws {
