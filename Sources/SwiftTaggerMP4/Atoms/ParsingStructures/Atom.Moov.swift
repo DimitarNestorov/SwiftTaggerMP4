@@ -126,6 +126,7 @@ extension Moov {
             }
         }
         set {
+            guard let newValue else { return }
             var newTracks = tracks.filter({$0.mdia.hdlr.handlerSubtype != .soun})
             newTracks.append(newValue)
             tracks = newTracks
