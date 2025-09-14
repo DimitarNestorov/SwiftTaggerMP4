@@ -24,7 +24,7 @@ struct ChapterHandler {
             let initialStart: Int
             let timeScale = chapterTrack.mdia.mdhd.timeScale
             print(timeScale)
-            if let elst = moov.soundTrack.edts?.elst {
+            if let elst = moov.soundTrack?.edts?.elst {
                 initialStart = Int((elst.firstStart / timeScale) * 1000)
             } else {
                 initialStart = 0
