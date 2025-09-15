@@ -22,10 +22,10 @@ public struct Tag {
 
         let moov = mp4File.moov
         var metadata = [AtomKey: Atom]()
-        if moov.udta?.meta?.ilst.children == nil {
+        if moov.udta?.meta?.ilst?.children == nil {
             self.metadataAtoms = [:]
         } else {
-            for atom in moov.udta?.meta?.ilst.children ?? [] {
+            for atom in moov.udta?.meta?.ilst?.children ?? [] {
                 if atom.identifier == "----" {
                     if let atom = atom as? UnknownMetadataAtom {
                         let key = AtomKey.unknown(atom.name)
