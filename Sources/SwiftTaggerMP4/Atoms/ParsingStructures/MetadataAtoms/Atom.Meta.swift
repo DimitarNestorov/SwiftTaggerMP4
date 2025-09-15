@@ -72,12 +72,12 @@ public class Meta: Atom {
         return data
     }
 
-    var hdlr: Hdlr {
+    var hdlr: Hdlr? {
         get {
             if let atom = self[.hdlr] as? Hdlr {
                 return atom
             } else {
-                fatalError("Required child 'hdlr' is missing from atom 'meta'")
+                return nil
             }
         }
         set {
@@ -85,12 +85,12 @@ public class Meta: Atom {
         }
     }
     
-    public var keys: PassThrough {
+    public var keys: PassThrough? {
         get {
             if let atom = self[.keys] as? PassThrough {
                 return atom
             } else {
-                fatalError("Required child 'keys' is missing from atom 'meta'")
+                return nil
             }
         }
         set {
@@ -98,12 +98,12 @@ public class Meta: Atom {
         }
     }
  
-    public var ilst: Ilst {
+    public var ilst: Ilst? {
         get {
             if let atom = self[.ilst] as? Ilst {
                 return atom
             } else {
-                fatalError("Required child 'ilst' is missing from atom 'meta'")
+                return nil
             }
         }
         set {
