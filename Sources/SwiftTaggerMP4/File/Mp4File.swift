@@ -24,7 +24,7 @@ public class Mp4File {
     public init(location: URL) throws {
         self.location = location
         
-        let validExtensions: [String] = ["aax", "aac", "mp4", "m4a", "m4b"]
+        let validExtensions: [String] = ["aax", "aac", "mp4", "m4a", "m4b", "mov"]
         
         guard validExtensions.contains(location.pathExtension.lowercased()) else {
             throw Mp4FileError.InvalidFileFormat
