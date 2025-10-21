@@ -182,7 +182,7 @@ public class Atom: CustomStringConvertible {
     }
     
     /// Gets and sets a sub atom with an identifier string matching `AtomIdentifier.rawValue`
-    subscript(_ identifier: AtomIdentifier) -> Atom? {
+    public subscript(_ identifier: AtomIdentifier) -> Atom? {
         get {
             if let atom = children.first(where: {$0.identifier == identifier.rawValue}) {
                 return atom
