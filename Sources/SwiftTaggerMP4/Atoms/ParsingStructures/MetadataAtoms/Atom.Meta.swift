@@ -103,7 +103,7 @@ public class Meta: Atom {
 }
 
 
-enum MetaAtomError: Error {
+public enum MetaAtomError: Error {
     /// Error thrown when a required atom is missing
     case IlstAtomNotFound
     /// Error thrown when a required atom is missing
