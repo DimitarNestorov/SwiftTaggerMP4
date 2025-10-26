@@ -23,7 +23,7 @@ class ChunkOffsetAtom: Atom {
     var chunkOffsetTable: [Int]
     
     /// Initialize a `chunkOffsetAtom` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         var data = payload
         self.version = data.extractFirst(1)
@@ -42,15 +42,11 @@ class ChunkOffsetAtom: Atom {
         }
         self.chunkOffsetTable = offsetTable
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// **CHAPTER TRACK ONLY** Initialize a `chunkOffsetAtom` with chapter track data
-    init(use64BitOffset: Bool,
-         chapterHandler: ChapterHandler,
-         startingOffset: Int) throws {
+	init(use64BitOffset: Bool, chapterHandler: ChapterHandler, startingOffset: Int, isMOV: Bool) throws {
         let titles = chapterHandler.chapterTitles
         let offsetArray = chapterHandler.calculateTitleOffsets(
             startingOffset: startingOffset, titles: titles)
@@ -68,11 +64,9 @@ class ChunkOffsetAtom: Atom {
         }
         
         if use64BitOffset {
-            try super.init(identifier: "co64",
-                           size: size)
+            try super.init(identifier: "co64", size: size, isMOV: isMOV)
         } else {
-            try super.init(identifier: "stco",
-                           size: size)
+            try super.init(identifier: "stco", size: size, isMOV: isMOV)
         }
     }
     

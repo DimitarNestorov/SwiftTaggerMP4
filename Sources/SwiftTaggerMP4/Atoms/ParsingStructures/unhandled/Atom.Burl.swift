@@ -14,13 +14,11 @@ class Burl: Atom {
     
     var baseUrl: String?
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         let data = payload
         self.baseUrl = data.stringUtf8
         
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
 
    /// Converts the atom's contents to Data when encoding the atom to write to file.

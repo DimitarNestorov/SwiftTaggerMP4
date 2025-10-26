@@ -12,12 +12,12 @@ import Foundation
 /// An `stbl` atom is simply a container atom for a collection of atoms that comprise what is known as the sample table. These atoms map the relationships between different elements required to handle mp4 file data.
 class Stbl: Atom {
     /// Initialize a `stbl` atom for parsing from the file content
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         var data = payload
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -39,13 +39,11 @@ class Stbl: Atom {
             throw StblError.ChunkOffsetAtomNotFound
         }
 
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize an `stbl` atom from its subatoms
-    private init(children: [Atom]) throws {
+    private init(children: [Atom], isMOV: Bool) throws {
         let size: Int = children.map({$0.size}).sum() + 8 // size and id bytes
 
         // required sub-atoms are `stsd`, `stsc`, `stts`, `stsz`.
@@ -63,23 +61,20 @@ class Stbl: Atom {
             throw StblError.StszAtomNotFound
         }
 
-        try super.init(identifier: "stbl",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "stbl", size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize an `stbl` atom when building a chapter track
     convenience init(chapterHandler: ChapterHandler,
                      moov: Moov) throws {
-        let stsd = try Stsd()
-        let stsc = try Stsc()
+		let stsd = try Stsd(isMOV: moov.isMOV)
+        let stsc = try Stsc(isMOV: moov.isMOV)
 
         let mvhd = moov.mvhd
-        let stts = try Stts(chapterHandler: chapterHandler,
-                            mediaDuration: mvhd.duration)
+        let stts = try Stts(chapterHandler: chapterHandler, mediaDuration: mvhd.duration, isMOV: moov.isMOV)
         
-        let stsz = try Stsz(titles: chapterHandler.chapterTitles)
-        try self.init(children: [stsd, stsc, stts, stsz])
+		let stsz = try Stsz(titles: chapterHandler.chapterTitles, isMOV: moov.isMOV)
+		try self.init(children: [stsd, stsc, stts, stsz], isMOV: moov.isMOV)
     }
     
     /// Sorts atoms into order to preserve media offsets

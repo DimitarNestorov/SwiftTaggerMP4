@@ -10,13 +10,11 @@ import SwiftLanguageAndLocaleCodes
 
 class Trak: Atom {
     /// Initialize an `trak` atom for parsing from the root structure
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -28,9 +26,7 @@ class Trak: Atom {
             throw TrakError.MdiaAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.
@@ -44,7 +40,7 @@ class Trak: Atom {
     }
 
     /// Initialize a `trak` atom from its children
-    private init(children: [Atom]) throws {
+    private init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
 
         guard children.contains(where: {$0.identifier == "tkhd"}) else {
@@ -54,22 +50,17 @@ class Trak: Atom {
             throw TrakError.MdiaAtomNotFound
         }
 
-        try super.init(identifier: "trak",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "trak", size: size, isMOV: isMOV, children: children)
     }
     
     
-    convenience init(chapterHandler: ChapterHandler,
-                     languages: [ICULocaleCode]?,
-                     moov: Moov,
-                     chapterTrackID: Int) throws {
+    convenience init(chapterHandler: ChapterHandler, languages: [ICULocaleCode]?, moov: Moov, chapterTrackID: Int) throws {
         let mdia = try Mdia(chapterHandler: chapterHandler,
                             languages: languages,
                             moov: moov)
         let duration = mdia.minf.stbl.stts.mediaDuration
-        let tkhd = try Tkhd(mediaDuration: Double(duration), trackID: chapterTrackID)
-        try self.init(children: [tkhd, mdia])
+		let tkhd = try Tkhd(mediaDuration: Double(duration), trackID: chapterTrackID, isMOV: moov.isMOV)
+		try self.init(children: [tkhd, mdia], isMOV: moov.isMOV)
     }
     
     private enum TrakError: Error {

@@ -25,7 +25,7 @@ class SoundAtom: Atom {
     
     var esds: PassThrough?
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         _ = data.extractFirst(6)
         self.dataReferenceIndex = data.extractFirst(2).uInt16BE
@@ -48,7 +48,7 @@ class SoundAtom: Atom {
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
             children.append(child)
             }
         }        
@@ -62,10 +62,7 @@ class SoundAtom: Atom {
             }
         }
 
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload,
-                   children: children)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV, children: children)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

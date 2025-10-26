@@ -150,7 +150,7 @@ extension Tag {
             return
         }
         
-        if let atom = try? PartAndTotalMetadataAtom(identifier: id, part: firstInt, total: lastInt) {
+        if let atom = try? PartAndTotalMetadataAtom(identifier: id, part: firstInt, total: lastInt, isMOV: isMOV) {
             metadataAtoms[key] = atom
         }
     }
@@ -171,12 +171,12 @@ extension Tag {
                 intValue = 0
             }
 
-            if let atom = try? IntegerMetadataAtom(identifier: id, intValue: intValue) {
+            if let atom = try? IntegerMetadataAtom(identifier: id, intValue: intValue, isMOV: isMOV) {
                 metadataAtoms[key] = atom
             }
         }
         if let int = Int(stringValue) {
-            if let atom = try? IntegerMetadataAtom(identifier: id, intValue: int) {
+            if let atom = try? IntegerMetadataAtom(identifier: id, intValue: int, isMOV: isMOV) {
                 metadataAtoms[key] = atom
             }
         }
@@ -186,7 +186,7 @@ extension Tag {
         key: AtomKey,
         id: StringMetadataIdentifier,
         stringValue: String) {
-        if let atom = try? StringMetadataAtom(identifier: id, stringValue: stringValue) {
+        if let atom = try? StringMetadataAtom(identifier: id, stringValue: stringValue, isMOV: isMOV) {
             metadataAtoms[key] = atom
         }
     }
@@ -196,7 +196,7 @@ extension Tag {
         _ = keyString.extractFirst(6)
         let name = keyString.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let atom = try? UnknownMetadataAtom(name: name, stringValue: stringValue) {
+        if let atom = try? UnknownMetadataAtom(name: name, stringValue: stringValue, isMOV: isMOV) {
             metadataAtoms[.unknown(name)] = atom
         }
     }

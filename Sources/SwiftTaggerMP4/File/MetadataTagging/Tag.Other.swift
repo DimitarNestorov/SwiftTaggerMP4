@@ -29,7 +29,7 @@ extension Tag {
     }
     
     public mutating func setCoverArt(location imageLocation: URL) throws {
-        let atom = try ImageMetadataAtom(imageLocation: imageLocation)
+        let atom = try ImageMetadataAtom(imageLocation: imageLocation, isMOV: isMOV)
         metadataAtoms[.coverArt] = atom
     }
     
@@ -48,8 +48,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try UnknownMetadataAtom(name: description ?? "",
-                                                       stringValue: new)
+                    let atom = try UnknownMetadataAtom(name: description ?? "", stringValue: new, isMOV: isMOV)
                     self.metadataAtoms[.unknown(description ?? "")] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(description ?? "")")

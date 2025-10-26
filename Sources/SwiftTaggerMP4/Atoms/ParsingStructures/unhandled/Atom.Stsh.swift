@@ -17,7 +17,7 @@ class Stsh: Atom {
     var entryCount: Int
     var sampleTable: [(shadowedSampleNumber: Int, syncSampleNumber: Int)]
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         var data = payload
         self.version = data.extractFirst(1)
@@ -34,9 +34,7 @@ class Stsh: Atom {
         }
         self.sampleTable = entryArray
         
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

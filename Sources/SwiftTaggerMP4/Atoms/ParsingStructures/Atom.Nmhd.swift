@@ -13,21 +13,19 @@ class Nmhd: Atom {
     private var flags: Data
     
     /// Initialize a `nmhd` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize an `nmhd` atom for building a chapter track
-    init() throws {
+	init(isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
-        try super.init(identifier: "nmhd", size: 12, payload: (self.version + self.flags))
+        try super.init(identifier: "nmhd", size: 12, payload: (self.version + self.flags), isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

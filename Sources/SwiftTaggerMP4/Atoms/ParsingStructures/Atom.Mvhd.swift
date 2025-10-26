@@ -27,7 +27,7 @@ class Mvhd: Atom {
     var nextTrackID: Int
     
     /// Initialize a `mvhd` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
 
         self.version = data.extractFirst(1)
@@ -64,7 +64,7 @@ class Mvhd: Atom {
         self.currentTime = data.extractFirst(4).uInt32BE
         self.nextTrackID = data.extractFirst(4).uInt32BE.int
         
-        try super.init(identifier: identifier, size: size, payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
         self.creationTime = creationTime
         self.modificationTime = modificationTime
         self.matrixStructure = matrixStructure

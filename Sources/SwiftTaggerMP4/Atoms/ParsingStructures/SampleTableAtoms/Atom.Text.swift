@@ -28,7 +28,7 @@ class Text: Atom {
     
     /// Initialize a `text` atom for parsing from the root structure
     /// *For chaptering purposes, this atom is the child atom of the `stsd` atom for a chapter track*
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         _ = data.extractFirst(6)
         self.dataReferenceIndex = data.extractFirst(2).uInt16BE
@@ -50,15 +50,13 @@ class Text: Atom {
         self.fontColorGreen = data.extractFirst(2).uInt16BE
         self.fontColorBlue = data.extractFirst(2).uInt16BE
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize a text atom for use as the `stsd` atom's sample description table
     ///
     /// This is specifically for use in creating a chapter track. May not work in other contexts.
-    init() throws {
+	init(isMOV: Bool) throws {
         self.dataReferenceIndex = 0x0001
         self.displayFlags = 0x0000_0001
         self.textJustification = 0x0000_0001
@@ -77,8 +75,7 @@ class Text: Atom {
         
         let size = 59
         
-        try super.init(identifier: "text",
-                       size: size)
+        try super.init(identifier: "text", size: size, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

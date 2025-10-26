@@ -18,9 +18,7 @@ class Damr: Atom {
     var modeChangePeriod: UInt8
     var framesPerSample: UInt8
     
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+	override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.vendor = data.extractFirst(4).uInt32BE
         self.decoderVersion = data.extractFirst(1).uInt8BE
@@ -28,9 +26,7 @@ class Damr: Atom {
         self.modeChangePeriod = data.extractFirst(1).uInt8BE
         self.framesPerSample = data.extractFirst(1).uInt8BE
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

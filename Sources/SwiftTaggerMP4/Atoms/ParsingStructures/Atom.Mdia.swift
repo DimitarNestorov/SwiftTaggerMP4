@@ -11,12 +11,12 @@ import SwiftLanguageAndLocaleCodes
 class Mdia: Atom {
 
     /// Initialize a `mdia` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -31,13 +31,11 @@ class Mdia: Atom {
             throw MdiaError.MinfAtomNotFound
         }
 
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `mdia` atom from its child atoms
-    private init(children: [Atom]) throws {
+    private init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
 
         guard children.contains(where: {$0.identifier == "mdhd"}) else {
@@ -50,9 +48,7 @@ class Mdia: Atom {
             throw MdiaError.MinfAtomNotFound
         }
 
-        try super.init(identifier: "mdia",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "mdia", size: size, isMOV: isMOV, children: children)
     }
     
     convenience init(chapterHandler: ChapterHandler,
@@ -60,17 +56,17 @@ class Mdia: Atom {
                      moov: Moov) throws {
         let minf = try Minf(chapterHandler: chapterHandler,
                             moov: moov)
-        let hdlr = try Hdlr(trackType: .text)
+		let hdlr = try Hdlr(trackType: .text, isMOV: moov.isMOV)
         let mdhd: Mdhd
         if let languages = languages {
-            mdhd = try Mdhd(elng: try Elng(locales: languages), moov: moov)
+			mdhd = try Mdhd(elng: try Elng(locales: languages, isMOV: moov.isMOV), moov: moov)
         } else {
             mdhd = try Mdhd(language: .und, moov: moov)
         }
-        try self.init(children: [mdhd, hdlr, minf])
+        try self.init(children: [mdhd, hdlr, minf], isMOV: moov.isMOV)
         
         if let languages = languages {
-            self.elng = try Elng(locales: languages)
+            self.elng = try Elng(locales: languages, isMOV: moov.isMOV)
         }
     }
     

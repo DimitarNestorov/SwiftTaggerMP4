@@ -12,6 +12,7 @@ import SwiftLanguageAndLocaleCodes
 /// A type representing an audio file stored locally
 public class Mp4File {
     
+    public let isMOV: Bool
     var rootAtoms: [Atom]
     var data: Data
     static var use64BitOffset: Bool = false
@@ -33,8 +34,13 @@ public class Mp4File {
         self.data = try Data(contentsOf: location)
         var fileData = self.data
         var atoms = [Atom]()
+        guard let firstAtom = try fileData.extractAndParseToAtom(isMOV: false) else {
+            throw Mp4FileError.UnableToInitializeAtomsFromFileData
+        }
+        atoms.append(firstAtom)
+		isMOV = firstAtom.identifier == "ftyp" && (firstAtom as? PassThrough)?.contentData.prefix(4) == majorBrandMOV
         while !fileData.isEmpty {
-            if let atom = try fileData.extractAndParseToAtom() {
+            if let atom = try fileData.extractAndParseToAtom(isMOV: isMOV) {
                 atoms.append(atom)
             } else {
                 throw Mp4FileError.UnableToInitializeAtomsFromFileData
@@ -121,7 +127,7 @@ public class Mp4File {
                             locales.append(language.localeCode)
                         }
                         do {
-                            let elng = try Elng(locales: locales)
+                            let elng = try Elng(locales: locales, isMOV: isMOV)
                             track.mdia.elng = elng
                             track.mdia.mdhd.language = Mdhd.getLanguage(from: track.mdia.elng!)
                         } catch {
@@ -179,6 +185,8 @@ public class Mp4File {
         }
     }
 }
+
+fileprivate let majorBrandMOV = Data([0x71, 0x74, 0x20, 0x20])
 
 enum Mp4FileError: Error {
     /// Error thrown when the file is not an MP4 format audio file

@@ -16,7 +16,7 @@ class Chpl: Atom {
     var chapterTable: [Chapter]
     
     /// Initialize a `chpl` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -38,13 +38,11 @@ class Chpl: Atom {
         }
         self.chapterTable = chapters
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize a `chpl` atom for building a chapter track
-    init(from chapterList: [Chapter]) throws {
+	init(from chapterList: [Chapter], isMOV: Bool) throws {
         self.version = UInt8(0x01).beData
         self.flags = Atom.flags
         self.reserved = Data([0x00])
@@ -54,7 +52,7 @@ class Chpl: Atom {
         let size = 17
             + (chapterList.count * 8)
             + (chapterList.map({$0.title.utf8.count + 1}).sum())
-        try super.init(identifier: "chpl", size: size)
+        try super.init(identifier: "chpl", size: size, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

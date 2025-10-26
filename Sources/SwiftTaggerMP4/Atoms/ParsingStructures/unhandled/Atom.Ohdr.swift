@@ -23,9 +23,7 @@ class Ohdr: Atom {
     var rightsIssuerUrl: String?
     var textualHeaders: Data
     
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -39,9 +37,7 @@ class Ohdr: Atom {
         self.rightsIssuerUrl = data.extractFirst(rightsIssuerUrlLength).stringASCII
         self.textualHeaders = data.extractFirst(textualHeadersLength)
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -15,7 +15,7 @@ class Elng: Atom {
     var languages: [Language]
     
     /// Initialize a `elng` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         self.version = data.extractFirst(1)
@@ -29,13 +29,11 @@ class Elng: Atom {
         }
         self.languages = languageArray
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize a `elng` atom from its content
-    init(locales: [ICULocaleCode]) throws {
+	init(locales: [ICULocaleCode], isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         var languageArray = [Language]()
@@ -47,8 +45,7 @@ class Elng: Atom {
         
         let size = 12 + locales.map({$0.rawValue.count + 1}).sum()
         
-        try super.init(identifier: "elng",
-                       size: size)
+        try super.init(identifier: "elng", size: size, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

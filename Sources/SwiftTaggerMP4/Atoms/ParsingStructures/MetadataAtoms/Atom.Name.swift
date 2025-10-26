@@ -17,24 +17,23 @@ class Name: Atom {
     var stringValue: String
     
     /// Initialize a `name` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
         let string = String(data: data, encoding: .utf8) ?? ""
         self.stringValue = string
-        try super.init(identifier: identifier, size: size, payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize a `name` atom with its content string
-    init(atomName: String) throws {
+	init(atomName: String, isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         self.stringValue = atomName
         
         let size = stringValue.utf8.count + 12
-        try super.init(identifier: "name",
-                       size: size)
+        try super.init(identifier: "name", size: size, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -131,22 +131,21 @@ extension Mp4File {
             for (_, atom) in tag.metadataAtoms {
                 newMetadataAtoms.append(atom)
             }
-            let ilst = try Ilst(children: newMetadataAtoms)
-            let hdlr = try Hdlr()
-            let meta = try Meta(children: [hdlr, ilst])
+            let ilst = try Ilst(children: newMetadataAtoms, isMOV: isMOV)
+            let hdlr = try Hdlr(isMOV: isMOV)
+            let meta = try Meta(children: [hdlr, ilst], isMOV: isMOV)
             if self.moov.udta != nil {
                 self.moov.udta?.meta = meta
             } else {
-                let udta = try Udta(children: [meta])
+                let udta = try Udta(children: [meta], isMOV: isMOV)
                 self.moov.udta = udta
             }
         }
     }
 
-    func setMdat(tag: Tag) throws {
+	func setMdat(tag: Tag) throws {
         let titles = tag.chapterHandler.chapterTitles
-        let mdat = try Mdat(mediaData: getMediaData(),
-                            titleArray: titles)
+		let mdat = try Mdat(mediaData: getMediaData(), titleArray: titles, isMOV: tag.isMOV)
         self.mdats = [mdat]
         
         self.moov.soundTrack?.mdia.minf.stbl.chunkOffsetAtom.chunkOffsetTable = try calculateNewMediaOffsets()
@@ -158,11 +157,11 @@ extension Mp4File {
             self.moov.chapterTrackID = nil
             self.moov.udta?.chpl = nil
         } else {
-            let chpl = try Chpl(from: tag.chapterList)
+            let chpl = try Chpl(from: tag.chapterList, isMOV: isMOV)
             if self.moov.udta != nil {
                 self.moov.udta?.chpl = chpl
             } else {
-                let udta = try Udta(children: [chpl])
+                let udta = try Udta(children: [chpl], isMOV: isMOV)
                 self.moov.udta = udta
             }
             
@@ -212,10 +211,7 @@ extension Mp4File {
                 }
             }
             // create the atom and add it to the chapter track sample table
-            let offsetAtom = try ChunkOffsetAtom(
-                use64BitOffset: Mp4File.use64BitOffset,
-                chapterHandler: tag.chapterHandler,
-                startingOffset: offset)
+            let offsetAtom = try ChunkOffsetAtom(use64BitOffset: Mp4File.use64BitOffset, chapterHandler: tag.chapterHandler, startingOffset: offset, isMOV: isMOV)
             
             self.moov.chapterTrack?.mdia.minf.stbl.chunkOffsetAtom = offsetAtom
             self.moov.chapterTrack?.mdia.minf.stbl.recalculateSize()

@@ -19,7 +19,7 @@ class Hdlr: Atom {
     var componentName: Data
     
     /// Initialize a `hdlr` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -28,9 +28,7 @@ class Hdlr: Atom {
         // reserved
         _ = data.extractFirst(12)
         self.componentName = data
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     // we do this here instead of the initializer because we only need to do it if the parent is mdia
@@ -50,7 +48,7 @@ class Hdlr: Atom {
     /// Initializes a `hdlr` atom for a chapter track.
     ///
     /// Specifically for building a chapter track. May not work in other contexts
-    init(trackType: TrackType) throws {
+	init(trackType: TrackType, isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         self.handlerTypeRaw = Data(repeating: 0x00, count: 4)
@@ -61,14 +59,13 @@ class Hdlr: Atom {
         let compName = "SubtitleHandler"
         self.componentName = compName.nullTerminatedISOLatin1
         
-        try super.init(identifier: "hdlr",
-                       size: 48)
+        try super.init(identifier: "hdlr", size: 48, isMOV: isMOV)
     }
     
     /// Initializes a `hdlr` atom with a `meta` parent.
     ///
     /// Specifically for use in metadata lists. May not work in other contexts
-    init() throws {
+	init(isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         self.handlerTypeRaw = Data(repeating: 0x00, count: 4)
@@ -79,8 +76,7 @@ class Hdlr: Atom {
         // + 8 reserved
         // + 1 null terminator
         
-        try super.init(identifier: "hdlr",
-                       size: 33)
+        try super.init(identifier: "hdlr", size: 33, isMOV: isMOV)
     }
     /*
      This is how Audible handler atoms look

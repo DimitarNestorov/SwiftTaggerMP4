@@ -25,7 +25,7 @@ extension Data.SubSequence {
     }
     
     /// Extracts atoms from a parent-atom's content data and determines how it will be handled based upon its identifier
-    internal mutating func extractAndParseToAtom() throws -> Atom? {
+    internal mutating func extractAndParseToAtom(isMOV: Bool) throws -> Atom? {
         let preliminarySize = extractAtomSize()
         guard let atomID = extractAtomID() else {
             return nil
@@ -45,38 +45,25 @@ extension Data.SubSequence {
         }
         
         if let identifier = AtomIdentifier(rawValue: atomID) {
-            return try identifier.parse(size: size,
-                                        payload: payload)
+            return try identifier.parse(size: size, payload: payload, isMOV: isMOV)
         } else if let identifier = TrackReferenceType(rawValue: atomID) {
-            return try identifier.parse(size: size,
-                                        payload: payload)
+            return try identifier.parse(size: size, payload: payload, isMOV: isMOV)
         } else if let identifier = DataReferenceType(rawValue: atomID) {
-            return try identifier.parse(size: size,
-                                        payload: payload)
+            return try identifier.parse(size: size, payload: payload, isMOV: isMOV)
         } else if let identifier =
             IntegerMetadataIdentifier(rawValue: atomID) {
-            return try identifier.parse(size: size,
-                                        payload: payload)
+            return try identifier.parse(size: size, payload: payload, isMOV: isMOV)
         } else if let identifier =
             StringMetadataIdentifier(rawValue: atomID) {
-            return try identifier.parse(size: size,
-                                        payload: payload)
+            return try identifier.parse(size: size, payload: payload, isMOV: isMOV)
         } else if atomID == "covr" {
-            return try ImageMetadataAtom(identifier: atomID,
-                                     size: size,
-                                     payload: payload)
+            return try ImageMetadataAtom(identifier: atomID, size: size, payload: payload, isMOV: isMOV)
         } else if atomID == "trkn" || atomID == "disk" {
-            return try PartAndTotalMetadataAtom(identifier: atomID,
-                                                size: size,
-                                                payload: payload)
+            return try PartAndTotalMetadataAtom(identifier: atomID, size: size, payload: payload, isMOV: isMOV)
         } else if atomID == "----" {
-            return try UnknownMetadataAtom(identifier: atomID,
-                                           size: size,
-                                           payload: payload)
+            return try UnknownMetadataAtom(identifier: atomID, size: size, payload: payload, isMOV: isMOV)
         } else {
-            return try PassThrough(identifier: atomID,
-                                   size: size,
-                                   payload: payload)
+            return try PassThrough(identifier: atomID, size: size, payload: payload, isMOV: isMOV)
         }
     }
 }

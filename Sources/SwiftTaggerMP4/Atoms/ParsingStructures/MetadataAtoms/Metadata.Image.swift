@@ -13,14 +13,12 @@ class ImageMetadataAtom: Atom {
     var image: NativeImage
     
     /// Initialize a `covr` atom by parsing from file content
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -55,13 +53,11 @@ class ImageMetadataAtom: Atom {
             throw MetadataAtomError.DataAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `covr` atom from an image file stored locally
-    init(imageLocation: URL) throws {
+	init(imageLocation: URL, isMOV: Bool) throws {
         #if os(iOS)
         if let image = NativeImage(contentsOfFile: imageLocation.path) {
             self.image = image
@@ -76,12 +72,10 @@ class ImageMetadataAtom: Atom {
         }
         #endif
         
-        let dataAtom = try DataAtom(imageLocation: imageLocation)        
+        let dataAtom = try DataAtom(imageLocation: imageLocation, isMOV: isMOV)
         let size = dataAtom.size + 8
         
-        try super.init(identifier: "covr",
-                       size: size,
-                       children: [dataAtom])
+        try super.init(identifier: "covr", size: size, isMOV: isMOV, children: [dataAtom])
     }    
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

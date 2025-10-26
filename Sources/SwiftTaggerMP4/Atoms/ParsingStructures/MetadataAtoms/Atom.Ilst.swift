@@ -13,18 +13,16 @@ import Foundation
 public class Ilst: Atom {
     
     /// Initialize a `ilst` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.
@@ -38,11 +36,9 @@ public class Ilst: Atom {
     }
 
     /// Initialize a `meta` atom for building a metadata list
-    init(children: [Atom]) throws {
+    init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
         
-        try super.init(identifier: "ilst",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "ilst", size: size, isMOV: isMOV, children: children)
     }
 }

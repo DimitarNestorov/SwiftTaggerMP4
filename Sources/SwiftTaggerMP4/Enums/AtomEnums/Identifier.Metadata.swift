@@ -49,10 +49,8 @@ enum IntegerMetadataIdentifier: String, CaseIterable {
     /// Year when media was recorded
     case year = "yrrc"
     
-    func parse(size: Int, payload: Data) throws -> Atom {
-        return try IntegerMetadataAtom(identifier: self.rawValue,
-                                       size: size,
-                                       payload: payload)
+	func parse(size: Int, payload: Data, isMOV: Bool) throws -> Atom {
+		return try IntegerMetadataAtom(identifier: self.rawValue, size: size, payload: payload, isMOV: isMOV)
     }
 }
 
@@ -266,10 +264,8 @@ enum StringMetadataIdentifier: String, CaseIterable {
     /// Name of movie’s writer
     case writer = "\u{00A9}wrt"
     
-    func parse(size: Int, payload: Data) throws -> Atom {
-        return try StringMetadataAtom(identifier: self.rawValue,
-                                      size: size,
-                                      payload: payload)
+	func parse(size: Int, payload: Data, isMOV: Bool) throws -> Atom {
+		return try StringMetadataAtom(identifier: self.rawValue, size: size, payload: payload, isMOV: isMOV)
     }
 }
 

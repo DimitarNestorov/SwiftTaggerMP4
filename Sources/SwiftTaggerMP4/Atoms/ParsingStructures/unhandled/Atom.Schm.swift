@@ -15,14 +15,12 @@ class Schm: Atom {
     var schemeType: UInt32
     var schemeVersion: UInt32
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.schemeType = data.extractFirst(4).uInt32BE
         self.schemeVersion = data.extractFirst(4).uInt32BE
         
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

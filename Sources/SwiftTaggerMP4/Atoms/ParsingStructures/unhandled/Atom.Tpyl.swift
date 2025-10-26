@@ -15,13 +15,11 @@ class Tpyl: Atom {
     /// bytes sent including RTP headers
     var bytes: UInt64
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.bytes = data.extractFirst(8).uInt64BE
         
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

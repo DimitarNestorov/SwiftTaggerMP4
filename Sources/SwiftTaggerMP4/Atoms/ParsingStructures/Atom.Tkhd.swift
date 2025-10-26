@@ -21,7 +21,7 @@ class Tkhd: Atom {
     var trackHeight: UInt32
     
     /// Initialize a `tkhd` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -58,9 +58,7 @@ class Tkhd: Atom {
         self.trackWidth = data.extractFirst(4).uInt32BE
         self.trackHeight = data.extractFirst(4).uInt32BE
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
         self.matrixStructure = matrixStructure
         self.creationTime = creationTime        
         self.modificationTime = modificationTime
@@ -86,7 +84,7 @@ class Tkhd: Atom {
     /// Initialize a `tkhd` atom for a chapter track
     ///
     /// Specifically for use with chapter tracks. May not work in other contexts.
-    init(mediaDuration: Double, trackID: Int) throws {
+	init(mediaDuration: Double, trackID: Int, isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         
@@ -109,8 +107,7 @@ class Tkhd: Atom {
         } else {
             size += 12
         }
-        try super.init(identifier: "tkhd",
-                       size: size)
+		try super.init(identifier: "tkhd", size: size, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

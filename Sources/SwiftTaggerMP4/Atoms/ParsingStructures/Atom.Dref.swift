@@ -15,7 +15,7 @@ class Dref: Atom {
     var entryCount: Int
     
     /// Initialize a `dref` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -23,30 +23,28 @@ class Dref: Atom {
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `dref` atom for building a chapter track
     ///
     /// May not work in other contexts
-    init() throws {
+	init(isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         self.entryCount = 1
         // these default values will build a "url " atom identical to what I have found in other files with chapter tracks
         let childPayload = Data(repeating: 0x00, count: 3) + Data(repeating: 0x01, count: 1)
-        let child = try DrefSubatom(identifier: "url ", size: 12, payload: childPayload)
+        let child = try DrefSubatom(identifier: "url ", size: 12, payload: childPayload, isMOV: isMOV)
         
         let size = 16 + child.size
         
-        try super.init(identifier: "dref", size: size, children: [child])
+        try super.init(identifier: "dref", size: size, isMOV: isMOV, children: [child])
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

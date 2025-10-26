@@ -19,7 +19,7 @@ class Stsd: Atom {
     var entryCount: Int
 
     /// Initialize a `stsd` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws  {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws  {
         var data = payload
         self.version = data.extractFirst(1)
         self.flags = data.extractFirst(3)
@@ -27,29 +27,24 @@ class Stsd: Atom {
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
 
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload,
-                       children: children)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV, children: children)
     }
     
     /// **CHAPTER TRACK ONLY** Initialize an `stsd` atom with default properties for building a chapter track
-    init() throws {
+	init(isMOV: Bool) throws {
         self.version = Atom.version // 1
         self.flags = Atom.flags // 3
         self.entryCount = 1 // 4
-        let child = try Text()
+        let child = try Text(isMOV: isMOV)
         
         let size = 16 + child.size
         
-        try super.init(identifier: "stsd",
-                       size: size,
-                       children: [child])
+		try super.init(identifier: "stsd", size: size, isMOV: isMOV, children: [child])
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

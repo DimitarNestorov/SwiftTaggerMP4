@@ -12,17 +12,17 @@ public class Meta: Atom {
     
     private var version: Data
     private var flags: Data
-    
+
     /// Initialize a `meta` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
-        self.version = data.extractFirst(1)
-        self.flags = data.extractFirst(3)
+        self.version = isMOV ? Atom.version : data.extractFirst(1)
+        self.flags = isMOV ? Atom.flags : data.extractFirst(3)
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -34,14 +34,12 @@ public class Meta: Atom {
             throw MetaAtomError.IlstAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload,
-                       children: children)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV, children: children)
     }
     
+    
     /// Initialize a `meta` atom for building a metadata list
-    init(children: [Atom]) throws {
+	init(children: [Atom], isMOV: Bool) throws {
         self.version = Atom.version
         self.flags = Atom.flags
         let size: Int = 12 + children.map({$0.size}).sum()
@@ -54,9 +52,7 @@ public class Meta: Atom {
             throw MetaAtomError.IlstAtomNotFound
         }
         
-        try super.init(identifier: "meta",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "meta", size: size, isMOV: isMOV, children: children)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.
@@ -65,8 +61,10 @@ public class Meta: Atom {
         var data = Data()
         data.reserveCapacity(reserve)
         
-        data.append(self.version)
-        data.append(self.flags)
+        if !isMOV {
+            data.append(self.version)
+            data.append(self.flags)
+        }
         data.append(contentsOf: children.flatMap({$0.encode}))
 
         return data

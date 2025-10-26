@@ -18,10 +18,7 @@ class Ac3: Atom {
     var samplingRate: UInt16
     var dac3: Dac3
     
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data,
-                  children: [Atom]) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool, children: [Atom]) throws {
         var data = payload
         // required, 6 bytes of reserved data
         _ = data.extractFirst(6)
@@ -38,7 +35,7 @@ class Ac3: Atom {
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -48,10 +45,7 @@ class Ac3: Atom {
             throw Ac3Error.Dac3AtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload,
-                       children: children)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV, children: children)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

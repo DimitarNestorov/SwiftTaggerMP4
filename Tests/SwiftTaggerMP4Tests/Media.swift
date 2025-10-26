@@ -30,6 +30,16 @@ public let sampleCover: URL =
         .appendingPathComponent("samplecover-green")
         .appendingPathExtension("jpg")
 
+public let sampleScreenRecordingMP4: URL =
+    testMediaDirectory
+        .appendingPathComponent("ScreenRecording_10-26-2025 19-27-27_1")
+        .appendingPathExtension("MP4")
+
+public let sampleScreenRecordingMOV: URL =
+    testMediaDirectory
+        .appendingPathComponent("ScreenRecording_10-04-2025 07-58-13_1")
+        .appendingPathExtension("MOV")
+
 let testMediaDirectory = URL(fileURLWithPath: #file)
     .deletingLastPathComponent()
     .appendingPathComponent("TestMedia")

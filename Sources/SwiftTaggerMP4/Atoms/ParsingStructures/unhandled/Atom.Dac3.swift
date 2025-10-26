@@ -16,15 +16,11 @@ class Dac3: Atom {
     private var payload: Data
     
     /// Initialize an atom for parsing from the root structure
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+	override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         self.payload = payload
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

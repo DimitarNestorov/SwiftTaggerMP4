@@ -26,7 +26,7 @@ class Stts: Atom {
     var sampleTable: [(sampleCount: Int, sampleDuration: Double)]
     
     /// Initialize a `stts` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         var data = payload
         self.version = data.extractFirst(1)
@@ -41,9 +41,7 @@ class Stts: Atom {
         }
         self.sampleTable = entryArray
 
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// The total duration of the media as the sum of the sample durations
@@ -91,8 +89,7 @@ class Stts: Atom {
     }
     
     /// **CHAPTER TRACK ONLY** Initialize an `stts` atom with chapter durations for building a chapter track
-    init(chapterHandler: ChapterHandler,
-         mediaDuration: Double) throws {
+	init(chapterHandler: ChapterHandler, mediaDuration: Double, isMOV: Bool) throws {
 
         let durationArray = chapterHandler.calculateDurationsFromStartTimes(
             mediaDuration: mediaDuration)
@@ -130,7 +127,7 @@ class Stts: Atom {
         self.flags = Atom.flags
         
         let size = 16 + (8 * entries.count)
-        try super.init(identifier: "stts", size: size)
+        try super.init(identifier: "stts", size: size, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

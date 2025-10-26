@@ -10,27 +10,23 @@ import Foundation
 /// A class representing a `tref` atom in an `Mp4File`'s atom structure
 class Tref: Atom {
     /// Initialize a `tref` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `tref` atom on the sound track to create a chapter track reference
-    init(chapterTrackID: Int) throws {
-        let child = try TrefSubatom(chapterTrackID: chapterTrackID)
+	init(chapterTrackID: Int, isMOV: Bool) throws {
+        let child = try TrefSubatom(chapterTrackID: chapterTrackID, isMOV: isMOV)
         
-        try super.init(identifier: "tref",
-                       size: child.size + 8,
-                       children: [child])
+        try super.init(identifier: "tref", size: child.size + 8, isMOV: isMOV, children: [child])
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

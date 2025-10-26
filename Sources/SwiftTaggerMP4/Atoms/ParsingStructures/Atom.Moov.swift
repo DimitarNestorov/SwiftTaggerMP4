@@ -9,13 +9,11 @@ import Foundation
 /// Initialize an `moov` atom for parsing from the root structure
 public class Moov: Atom {
     /// Initialize an `mdat` atom for parsing from the root structure
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -28,9 +26,7 @@ public class Moov: Atom {
             throw MoovError.TrakAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Sorts atoms into order to preserve media offsets
@@ -78,7 +74,7 @@ public class Moov: Atom {
     }
 
     /// Initialize a `moov` atom from its children
-    init(children: [Atom]) throws {
+    init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
         
         guard children.contains(where: {$0.identifier == "mvhd"}) else {
@@ -89,9 +85,7 @@ public class Moov: Atom {
             throw MoovError.TrakAtomNotFound
         }
 
-        try super.init(identifier: "moov",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "moov", size: size, isMOV: isMOV, children: children)
     }
 }
 
@@ -156,13 +150,13 @@ extension Moov {
             if let new = newValue {
                 if soundTrack?.tref != nil {
                     do {
-                        soundTrack?.tref?.chap = try TrefSubatom(chapterTrackID: new)
+                        soundTrack?.tref?.chap = try TrefSubatom(chapterTrackID: new, isMOV: isMOV)
                     } catch {
                         fatalError("WARNING: Unable to initialize soundtrack.tref.chap atom with new chapter trackID")
                     }
                 } else {
                     do {
-                        soundTrack?.tref = try Tref(chapterTrackID: new)
+                        soundTrack?.tref = try Tref(chapterTrackID: new, isMOV: isMOV)
                     } catch {
                         fatalError("WARNING: Unable to initialize soundtrack.tref atom with new chapter track ID")
                     }

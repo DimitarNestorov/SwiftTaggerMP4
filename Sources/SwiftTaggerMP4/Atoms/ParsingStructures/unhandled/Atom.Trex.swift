@@ -20,7 +20,7 @@ class Trex: Atom {
     var defaultSampleSize: UInt32
     var defaultSampleFlags: UInt32
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         self.version = data.extractFirst(1)
@@ -30,9 +30,7 @@ class Trex: Atom {
         self.defaultSampleDuration = data.extractFirst(4).uInt32BE
         self.defaultSampleSize = data.extractFirst(4).uInt32BE
         self.defaultSampleFlags = data.extractFirst(4).uInt32BE
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

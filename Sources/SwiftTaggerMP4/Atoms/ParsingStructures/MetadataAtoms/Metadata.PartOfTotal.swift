@@ -14,14 +14,12 @@ class PartAndTotalMetadataAtom: Atom {
     var total: Int?
     
     /// Initialize a metadata atom with `track number/total` or `disc number/total` content by parsing from file contents
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -60,13 +58,11 @@ class PartAndTotalMetadataAtom: Atom {
             throw MetadataAtomError.DataAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a metadata atom with disc or track `part/total` content
-    init(identifier: String, part: Int, total: Int?) throws {
+	init(identifier: String, part: Int, total: Int?, isMOV: Bool) throws {
         self.part = part
         self.total = total
         var data = Data(repeating: 0x00, count: 2)
@@ -77,12 +73,10 @@ class PartAndTotalMetadataAtom: Atom {
         if identifier == "trkn" {
             data.append(Data(repeating: 0x00, count: 2))
         }
-        let dataAtom = try DataAtom(data: data)
+        let dataAtom = try DataAtom(data: data, isMOV: isMOV)
         let size = dataAtom.size + 8
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: [dataAtom])
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: [dataAtom])
     }
 
    /// Converts the atom's contents to Data when encoding the atom to write to file.

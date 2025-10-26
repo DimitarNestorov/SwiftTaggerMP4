@@ -9,6 +9,7 @@ import Foundation
 import SwiftLanguageAndLocaleCodes
 
 public struct Tag {
+	public let isMOV: Bool
     public var metadataAtoms: [AtomKey: Atom]
     
     public var languages: [Language] = []
@@ -17,6 +18,7 @@ public struct Tag {
     var location: URL
     
     public init(mp4File: Mp4File) throws {
+		isMOV = mp4File.isMOV
         self.location = mp4File.location
         self.chapterHandler = try ChapterHandler(file: mp4File)
 

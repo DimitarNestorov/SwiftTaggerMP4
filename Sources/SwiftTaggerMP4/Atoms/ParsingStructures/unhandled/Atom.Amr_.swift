@@ -15,7 +15,7 @@ class Amr: Atom {
     var timeScale: UInt16
     var damr: Damr
     
-    override init(identifier: String, size: Int, payload: Data, children: [Atom]) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool, children: [Atom]) throws {
         var data = payload
         // required, 6 bytes reserved
         _ = data.extractFirst(6)
@@ -26,7 +26,7 @@ class Amr: Atom {
         // required, 4 bytes reserved
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -36,10 +36,7 @@ class Amr: Atom {
             throw AmrError.DamrAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload,
-                       children: children)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV, children: children)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

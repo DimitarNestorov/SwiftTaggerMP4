@@ -39,9 +39,7 @@ enum TrackReferenceType: String, CaseIterable {
 }
 
 extension TrackReferenceType {
-    func parse(size: Int, payload: Data) throws -> Atom {
-        return try TrefSubatom(identifier: self.rawValue,
-                               size: size,
-                               payload: payload)
+	func parse(size: Int, payload: Data, isMOV: Bool) throws -> Atom {
+		return try TrefSubatom(identifier: self.rawValue, size: size, payload: payload, isMOV: isMOV)
     }
 }

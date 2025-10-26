@@ -14,12 +14,12 @@ class Sinf: Atom {
     
     var frma: Frma
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -29,9 +29,7 @@ class Sinf: Atom {
             throw InformationAtomError.FrmaAtomNotFound
         }
 
-        try super.init(identifier: identifier,
-                   size: size,
-                   children: children)
+		try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

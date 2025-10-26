@@ -18,7 +18,7 @@ class Gmin: Atom {
     var opColorBlue: UInt16
     var balance: UInt16
 
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         self.graphicsMode = data.extractFirst(2).uInt16BE
         self.opColorRed = data.extractFirst(2).uInt16BE
@@ -27,9 +27,7 @@ class Gmin: Atom {
         self.balance = data.extractFirst(2).uInt16BE
         _ = data.extractFirst(2)
 
-        try super.init(identifier: identifier,
-                   size: size,
-                   payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -10,12 +10,12 @@ import Foundation
 /// A class representing a `dinf` atom in an `Mp4File`'s atom structure
 class Dinf: Atom {
     /// Initialize a `dinf` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -24,17 +24,13 @@ class Dinf: Atom {
             throw DinfError.DrefAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `dinf` atom for building a chapter track
     init(from dref: Dref) throws {
         let size: Int = 8 + dref.size
-        try super.init(identifier: "dinf",
-                       size: size,
-                       children: [dref])
+        try super.init(identifier: "dinf", size: size, isMOV: dref.isMOV, children: [dref])
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

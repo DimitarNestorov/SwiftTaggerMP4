@@ -11,26 +11,22 @@ import Foundation
 public class Udta: Atom {
     
     /// Initialize a `udta` atom upon parsing the `root` atom structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `udta` atom from its array of child atoms
-    init(children: [Atom]) throws {
+    init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
 
-        try super.init(identifier: "udta",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "udta", size: size, isMOV: isMOV, children: children)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -12,14 +12,12 @@ class IntegerMetadataAtom: Atom {
     var intValue: Int
     
     /// Initialize a metadata atom with integer content by parsing from file contents
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -70,24 +68,18 @@ class IntegerMetadataAtom: Atom {
             throw MetadataAtomError.DataAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a metadata atom with integer content for building a metadata list
-    init(identifier: IntegerMetadataIdentifier, intValue: Int) throws {
+	init(identifier: IntegerMetadataIdentifier, intValue: Int, isMOV: Bool) throws {
         self.intValue = intValue
         
-        let dataAtom = try DataAtom(
-            identifier: identifier.rawValue,
-            intValue: intValue)
+        let dataAtom = try DataAtom(identifier: identifier.rawValue,intValue: intValue, isMOV: isMOV)
         
         let size = dataAtom.size + 8
         
-        try super.init(identifier: identifier.rawValue,
-                       size: size,
-                       children: [dataAtom])
+        try super.init(identifier: identifier.rawValue, size: size, isMOV: isMOV, children: [dataAtom])
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

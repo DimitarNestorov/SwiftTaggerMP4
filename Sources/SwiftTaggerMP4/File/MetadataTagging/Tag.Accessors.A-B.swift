@@ -20,7 +20,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                let atom = try StringMetadataAtom(identifier: .acknowledgment, stringValue: new)
+                let atom = try StringMetadataAtom(identifier: .acknowledgment, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.acknowledgment] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.acknowledgment)")
@@ -42,7 +42,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .album, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .album, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.album] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.album)")
@@ -64,7 +64,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .albumArtist, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .albumArtist, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.albumArtist] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.albumArtist)")
@@ -86,7 +86,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .albumArtistSort, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .albumArtistSort, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.albumArtistSort] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.albumArtistSort)")
@@ -108,7 +108,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .albumSort, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .albumSort, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.albumSort] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.albumSort)")
@@ -130,7 +130,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .arranger, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .arranger, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.arranger] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.arranger)")
@@ -152,7 +152,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .arrangerKeywords, stringValue: new.toString)
+                    let atom = try StringMetadataAtom(identifier: .arrangerKeywords, stringValue: new.toString, isMOV: isMOV)
                     metadataAtoms[.arrangerKeywords] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.arrangerKeywords)")
@@ -174,7 +174,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .artDirector, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .artDirector, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.artDirector] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.artDirector)")
@@ -196,7 +196,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .artist, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .artist, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.artist] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.artist)")
@@ -218,7 +218,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .artistKeywords, stringValue: new.toString)
+                    let atom = try StringMetadataAtom(identifier: .artistKeywords, stringValue: new.toString, isMOV: isMOV)
                     metadataAtoms[.artistKeywords] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.artistKeywords)")
@@ -240,7 +240,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .artistSort, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .artistSort, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.artistSort] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.artistSort)")
@@ -262,7 +262,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .artistUrl, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .artistUrl, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.artistUrl] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.artistUrl)")
@@ -284,7 +284,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try IntegerMetadataAtom(identifier: .artistID, intValue: new)
+                    let atom = try IntegerMetadataAtom(identifier: .artistID, intValue: new, isMOV: isMOV)
                     metadataAtoms[.artistID] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(IntegerMetadataIdentifier.artistID)")
@@ -306,7 +306,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try IntegerMetadataAtom(identifier: .appleStoreCountryID, intValue: new)
+                    let atom = try IntegerMetadataAtom(identifier: .appleStoreCountryID, intValue: new, isMOV: isMOV)
                     metadataAtoms[.appleStoreCountryID] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(IntegerMetadataIdentifier.appleStoreCountryID)")
@@ -328,7 +328,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try IntegerMetadataAtom(identifier: .bpm, intValue: new)
+                    let atom = try IntegerMetadataAtom(identifier: .bpm, intValue: new, isMOV: isMOV)
                     metadataAtoms[.bpm] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(IntegerMetadataIdentifier.bpm)")

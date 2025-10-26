@@ -14,12 +14,12 @@ class Gmhd: Atom {
     
     var gmin: Gmin
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         var children = [Atom]()
         
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -29,9 +29,7 @@ class Gmhd: Atom {
             throw GmhdError.GminAtomNotFound
         }
 
-        try super.init(identifier: identifier,
-                   size: size,
-                   children: children)
+		try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
 
     }
     

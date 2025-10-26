@@ -5,8 +5,16 @@ import StringMetric
 
 @testable import SwiftTaggerMP4
 
-
 final class SwiftTaggerMP4Tests: XCTestCase {
+    func testIsReplayKitRecordingMP4() throws {
+        let file = try Mp4File(location: sampleScreenRecordingMP4)
+        XCTAssertEqual((file.moov.udta?.children.first as? PassThrough)?.contentData, replayKitRecordingUdtaBytes)
+    }
+
+    func testIsReplayKitRecordingMOV() throws {
+        let file = try Mp4File(location: sampleScreenRecordingMOV)
+        XCTAssertEqual((file.moov[.meta]?[.ilst]?.children.first as? PassThrough)?.contentData, replayKitRecordingMetaBytes)
+    }
     
     func testAddChapter() throws {
         let mp4 = try Mp4File(location: sampleNoMeta)
@@ -1441,3 +1449,7 @@ final class SwiftTaggerMP4Tests: XCTestCase {
     //     XCTAssertEqual(chapterList, result.chapterList)
     // }
 }
+
+fileprivate let replayKitCommonBytes: [UInt8] = [0x55, 0xc4, 0x52, 0x65, 0x70, 0x6c, 0x61, 0x79, 0x4b, 0x69, 0x74, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x69, 0x6e, 0x67]
+fileprivate let replayKitRecordingUdtaBytes = Data([0x00, 0x00, 0x00, 0x00] + replayKitCommonBytes + [0x00])
+fileprivate let replayKitRecordingMetaBytes = Data([0x00, 0x00, 0x00, 0x22, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00] + replayKitCommonBytes)

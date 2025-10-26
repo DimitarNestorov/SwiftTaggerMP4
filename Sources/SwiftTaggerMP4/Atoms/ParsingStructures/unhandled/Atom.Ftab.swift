@@ -15,7 +15,7 @@ class Ftab: Atom {
     var entryCount: Int
     var fontTable: [(fontID: Int, fontName: String)]
     
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         
         var data = payload
         self.entryCount = data.extractToInt(2)
@@ -28,9 +28,7 @@ class Ftab: Atom {
         }
         self.fontTable = table
 
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -19,14 +19,12 @@ public class UnknownMetadataAtom: Atom {
     public var stringValue: String
     
     /// Initialize a freeform atom by parsing from file content
-    override init(identifier: String,
-                  size: Int,
-                  payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -59,24 +57,20 @@ public class UnknownMetadataAtom: Atom {
             throw MetadataAtomError.DataAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     
     /// Initialize a freeform atom for use in building a metadata list
-    init(name: String, stringValue: String) throws {
-        let mean = try Mean()
-        let nameAtom = try Name(atomName: name)
+	init(name: String, stringValue: String, isMOV: Bool) throws {
+        let mean = try Mean(isMOV: isMOV)
+        let nameAtom = try Name(atomName: name, isMOV: isMOV)
         self.name = name
-        let dataAtom = try DataAtom(stringValue: stringValue)
+        let dataAtom = try DataAtom(stringValue: stringValue, isMOV: isMOV)
         self.stringValue = stringValue
                 
         let size = mean.size + nameAtom.size + dataAtom.size + 8
-        try super.init(identifier: "----",
-                       size: size,
-                       children: [mean, nameAtom, dataAtom])
+        try super.init(identifier: "----", size: size,isMOV: isMOV, children: [mean, nameAtom, dataAtom])
     }
 
     /// Sorts atoms into order to preserve media offsets

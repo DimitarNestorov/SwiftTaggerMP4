@@ -10,12 +10,12 @@ import Foundation
 /// A class representing a `edts` atom in an `Mp4File`'s atom structure
 class Edts: Atom {
     /// Initialize a `edts` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -24,9 +24,7 @@ class Edts: Atom {
             throw EdtsError.ElstAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

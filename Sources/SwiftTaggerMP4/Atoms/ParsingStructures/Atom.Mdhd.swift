@@ -20,7 +20,7 @@ class Mdhd: Atom {
     var quality: Int
     
     /// Initialize a `mdhd` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         self.version = data.extractFirst(1)
@@ -46,9 +46,7 @@ class Mdhd: Atom {
         self.languageUInt16 = data.extractFirst(2).uInt16BE
         self.quality = data.extractToInt(2)
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
         
         self.creationTime = creationTime        
         self.modificationTime = modificationTime        
@@ -129,14 +127,13 @@ class Mdhd: Atom {
             size += 12
         }
         
-        try super.init(identifier: "mdhd",
-                       size: size)
+		try super.init(identifier: "mdhd", size: size, isMOV: moov.isMOV)
     }
     
     /// **CHAPTER TRACK ONLY** Initialize a `mdhd` atom from a duration and `elng` atom
     ///
     /// **NOTE:** for use in a CHAPTER TRAK ONLY
-    init(elng: Elng, moov: Moov) throws {
+	init(elng: Elng, moov: Moov) throws {
         let language = Mdhd.getLanguage(from: elng)
         
         self.version = Atom.version
@@ -156,8 +153,7 @@ class Mdhd: Atom {
             size += 12
         }
 
-        try super.init(identifier: "mdhd",
-                       size: size)
+		try super.init(identifier: "mdhd", size: size, isMOV: moov.isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -9,6 +9,8 @@ import Foundation
 import SwiftConvenienceExtensions
 
 public class Atom: CustomStringConvertible {
+    public let isMOV: Bool
+
     /// The atom's unique four byte identifier
     public var identifier: String
 
@@ -74,9 +76,10 @@ public class Atom: CustomStringConvertible {
     ///   - identifier: the four character code of the atom
     ///   - size: the byte-count of the atom
     ///   - payload: content data of the atom to be parsed
-    init(identifier: String, size: Int, payload: Data) throws {
+    init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         self.identifier = identifier
         self.size = size
+        self.isMOV = isMOV
         self._children = []
     }
 
@@ -84,9 +87,10 @@ public class Atom: CustomStringConvertible {
     /// - Parameters:
     ///   - identifier: the four character code of the atom
     ///   - size: the byte-count of the atom
-    init(identifier: String, size: Int) throws {
+    init(identifier: String, size: Int, isMOV: Bool) throws {
         self.identifier = identifier
         self.size = size
+        self.isMOV = isMOV
         self._children = []
     }
 
@@ -95,9 +99,10 @@ public class Atom: CustomStringConvertible {
     ///   - identifier: the four character code of the atom
     ///   - size: the byte-count of the atom
     ///   - _children: the array of child atoms
-    init(identifier: String, size: Int, children: [Atom]) throws {
+    init(identifier: String, size: Int, isMOV: Bool, children: [Atom]) throws {
         self.identifier = identifier
         self.size = size
+        self.isMOV = isMOV
         self._children = children
         for child in _children {
             child.parent = self
@@ -110,10 +115,10 @@ public class Atom: CustomStringConvertible {
     ///   - size: the byte-count of the atom
     ///   - payload: content data of the atom to be parsed
     ///   - children: the array of child atoms
-    init(identifier: String, size: Int,
-         payload: Data, children: [Atom]) throws {
+    init(identifier: String, size: Int, payload: Data, isMOV: Bool, children: [Atom]) throws {
         self.identifier = identifier
         self.size = size
+        self.isMOV = isMOV
         self._children = children
         for child in _children {
             child.parent = self

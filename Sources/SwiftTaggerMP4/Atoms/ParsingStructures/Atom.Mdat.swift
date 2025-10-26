@@ -12,10 +12,10 @@ class Mdat: Atom {
     private var payload: Data
     
     /// Initialize an `mdat` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         self.payload = payload
         
-        try super.init(identifier: identifier, size: size, payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
    /// Converts the atom's contents to Data when encoding the atom to write to file.
@@ -24,7 +24,7 @@ class Mdat: Atom {
     }
     
     /// create an `mdat` atom with the media data up front and the chapter title data at the end
-    init(mediaData: Data, titleArray: [String]) throws {
+	init(mediaData: Data, titleArray: [String], isMOV: Bool) throws {
         let reserve = mediaData.count + titleArray.map({$0.utf8.count + 2}).sum()
         var payload = Data()
         payload.reserveCapacity(reserve)
@@ -37,6 +37,6 @@ class Mdat: Atom {
         self.payload = payload
         
         let size = reserve + 8
-        try super.init(identifier: "mdat", size: size, payload: payload)
+        try super.init(identifier: "mdat", size: size, payload: payload, isMOV: isMOV)
     }
 }

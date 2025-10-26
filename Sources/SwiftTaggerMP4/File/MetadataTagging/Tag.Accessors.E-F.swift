@@ -19,7 +19,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription1, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription1, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription1] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription1)")
@@ -41,7 +41,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription2, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription2, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription2] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription2)")
@@ -63,7 +63,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription3, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription3, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription3] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription3)")
@@ -85,7 +85,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription4, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription4, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription4] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription4)")
@@ -107,7 +107,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription5, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription5, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription5] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription5)")
@@ -129,7 +129,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription6, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription6, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription6] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription6)")
@@ -151,7 +151,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription7, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription7, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription7] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription7)")
@@ -173,7 +173,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription8, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription8, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription8] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription8)")
@@ -195,7 +195,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription9, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .editDateAndDescription9, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.editDateAndDescription9] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.editDateAndDescription9)")
@@ -217,7 +217,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .encodedBy, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .encodedBy, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.encodedBy] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.encodedBy)")
@@ -239,7 +239,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .encodingTool, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .encodingTool, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.encodingTool] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.encodingTool)")
@@ -261,7 +261,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .executiveProducer, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .executiveProducer, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.executiveProducer] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.executiveProducer)")
@@ -283,7 +283,7 @@ extension Tag {
         set {
             if let new = newValue {
                 do {
-                    let atom = try StringMetadataAtom(identifier: .format, stringValue: new)
+                    let atom = try StringMetadataAtom(identifier: .format, stringValue: new, isMOV: isMOV)
                     metadataAtoms[.format] = atom
                 } catch {
                     fatalError("WARNING: Unable to initialize metadata atom with identifier \(StringMetadataIdentifier.format)")

@@ -13,7 +13,7 @@ class TrefSubatom: Atom {
     var trackIDs: [Int]
     
     /// Initialize track reference atoms upon parsing
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var ids: [Int] = []
@@ -23,17 +23,13 @@ class TrefSubatom: Atom {
         }        
         self.trackIDs = ids
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Initialize a `chap` reference atom
-    init(chapterTrackID: Int) throws {
+	init(chapterTrackID: Int, isMOV: Bool) throws {
         self.trackIDs = [chapterTrackID]
-        try super.init(identifier: "chap",
-                       size: 12,
-                       payload: chapterTrackID.uInt32.beData)
+        try super.init(identifier: "chap", size: 12, payload: chapterTrackID.uInt32.beData, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.

@@ -11,12 +11,12 @@ import Foundation
 class Minf: Atom {
     
     /// Initialize a `minf` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         var children = [Atom]()
         while !data.isEmpty {
-            if let child = try data.extractAndParseToAtom() {
+            if let child = try data.extractAndParseToAtom(isMOV: isMOV) {
                 children.append(child)
             }
         }
@@ -36,13 +36,11 @@ class Minf: Atom {
             throw MinfError.StblAtomNotFound
         }
         
-        try super.init(identifier: identifier,
-                       size: size,
-                       children: children)
+        try super.init(identifier: identifier, size: size, isMOV: isMOV, children: children)
     }
     
     /// Initialize a `minf` atom from its children
-    private init(children: [Atom]) throws {
+    private init(children: [Atom], isMOV: Bool) throws {
         let size: Int = 8 + children.map({$0.size}).sum()
 
         guard children.contains(where: {
@@ -60,19 +58,17 @@ class Minf: Atom {
             throw MinfError.StblAtomNotFound
         }
 
-        try super.init(identifier: "minf",
-                       size: size,
-                       children: children)
+        try super.init(identifier: "minf", size: size, isMOV: isMOV, children: children)
     }
     
     convenience init(chapterHandler: ChapterHandler,
                      moov: Moov) throws {
         let stbl = try Stbl(chapterHandler: chapterHandler,
                             moov: moov)
-        let dinf = try Dinf(from: try Dref())
-        let nmhd = try Nmhd()
+		let dinf = try Dinf(from: try Dref(isMOV: moov.isMOV))
+		let nmhd = try Nmhd(isMOV: moov.isMOV)
 
-        try self.init(children: [nmhd, dinf, stbl])
+		try self.init(children: [nmhd, dinf, stbl], isMOV: moov.isMOV)
     }
     
     /// Sorts atoms into order to preserve media offsets

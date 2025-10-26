@@ -19,7 +19,7 @@ class DataAtom: Atom {
     var data: Data
     
     /// Initialize a `data` atom for parsing from the root structure
-    override init(identifier: String, size: Int, payload: Data) throws {
+    override init(identifier: String, size: Int, payload: Data, isMOV: Bool) throws {
         var data = payload
         
         // To determine the dataType, convert the first four bytes of the atom data to an integer an initialize the `DataType` enum with the integer as a rawValue.
@@ -31,9 +31,7 @@ class DataAtom: Atom {
         }
         self.locale = data.extractFirst(4)
         self.data = data
-        try super.init(identifier: identifier,
-                       size: size,
-                       payload: payload)
+        try super.init(identifier: identifier, size: size, payload: payload, isMOV: isMOV)
     }
     
     /// Converts the atom's contents to Data when encoding the atom to write to file.
@@ -50,7 +48,7 @@ class DataAtom: Atom {
     }
     
     /// Initialize a `data` atom from an image file stored locally as a sub-atom for a metadata atom with image content
-    init(imageLocation: URL) throws {
+	init(imageLocation: URL, isMOV: Bool) throws {
         if imageLocation.pathExtension == "jpg" ||
             imageLocation.pathExtension == "jpeg" {
             self.dataType = .jpeg
@@ -65,23 +63,22 @@ class DataAtom: Atom {
         
         let size = data.count + 16
         
-        try super.init(identifier: "data", size: size)
+        try super.init(identifier: "data", size: size, isMOV: isMOV)
     }
     
     /// Initialize a `data` atom as a sub-atom for a metadata atom with string content
-    init(stringValue: String) throws {
+	init(stringValue: String, isMOV: Bool) throws {
         self.dataType = .utf8
         self.locale = Data(repeating: 0x00, count: 4)
         self.data = stringValue.encodedUtf8
         
         let size = 16 + data.count
         
-        try super.init(identifier: "data",
-                       size: size)
+		try super.init(identifier: "data", size: size, isMOV: isMOV)
     }
     
     /// Initialize a `data` atom as a sub-atom for a metadata atom with integer content
-    init(identifier: String, intValue: Int) throws {
+	init(identifier: String, intValue: Int, isMOV: Bool) throws {
         if intValue > UInt32.max {
             self.dataType = .signedInt64BE
         } else {
@@ -102,19 +99,17 @@ class DataAtom: Atom {
 
         let size = data.count + 16
         
-        try super.init(identifier: "data",
-                       size: size)
+        try super.init(identifier: "data", size: size, isMOV: isMOV)
     }
     
     /// initialize a data atom for use with a metadata atom containing an unspecified content type
-    init(data: Data) throws {
+	init(data: Data, isMOV: Bool) throws {
         self.dataType = .reserved
         self.locale = Data(repeating: 0x00, count: 4)
         self.data = data
         
         let size = data.count + 16
         
-        try super.init(identifier: "data",
-                       size: size)
+        try super.init(identifier: "data", size: size, isMOV: isMOV)
     }
 }
