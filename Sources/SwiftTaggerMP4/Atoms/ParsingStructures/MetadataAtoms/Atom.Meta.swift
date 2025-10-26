@@ -10,9 +10,15 @@ import Foundation
 /// A class representing a `meta` atom in an `Mp4File`'s atom structure
 public class Meta: Atom {
     
+    private var version: Data
+    private var flags: Data
+    
     /// Initialize a `meta` atom for parsing from the root structure
     override init(identifier: String, size: Int, payload: Data) throws {
         var data = payload
+        
+        self.version = data.extractFirst(1)
+        self.flags = data.extractFirst(3)
         
         var children = [Atom]()
         while !data.isEmpty {
@@ -36,6 +42,8 @@ public class Meta: Atom {
     
     /// Initialize a `meta` atom for building a metadata list
     init(children: [Atom]) throws {
+        self.version = Atom.version
+        self.flags = Atom.flags
         let size: Int = 12 + children.map({$0.size}).sum()
 
         // hdlr and ilst are required subatoms
@@ -57,6 +65,8 @@ public class Meta: Atom {
         var data = Data()
         data.reserveCapacity(reserve)
         
+        data.append(self.version)
+        data.append(self.flags)
         data.append(contentsOf: children.flatMap({$0.encode}))
 
         return data
