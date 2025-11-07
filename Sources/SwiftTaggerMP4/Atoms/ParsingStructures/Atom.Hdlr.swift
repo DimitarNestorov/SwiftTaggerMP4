@@ -39,9 +39,9 @@ class Hdlr: Atom {
                 type = trackType
             }
         }
-        guard type != .unknown else {
-            fatalError("Unrecognized handler subtype")
-        }
+        // guard type != .unknown else {
+        //     fatalError("Unrecognized handler subtype")
+        // }
         return type
     }
         
